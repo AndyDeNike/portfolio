@@ -1,6 +1,58 @@
+<?php
+	ini_set('display_errors',1); 
+	error_reporting(E_ALL);
+
+	$msg = "";
+	use PHPMailer\PHPMailer\PHPMailer;
+	include_once "PHPMailer/PHPMailer.php";
+	include_once "PHPMailer/SMTP.php";
+	include_once "PHPMailer/Exception.php";
+
+
+	if (isset($_POST['submit'])) {
+        
+        $honeypot = trim($_POST["email"]);
+        
+        if(!empty($honeypot)) {
+            exit;
+        }
+        
+		$name = $_POST['name'];
+		$email = $_POST['email_real'];
+
+		$mail = new PHPMailer();
+
+
+		$mail->IsSMTP();
+		$mail->SMTPDebug = 0;  //1- errors/message 2- messages only
+		$mail->Host = 'smtp.gmail.com';
+		$mail->SMTPAuth = true;
+		$mail->Username = 'denikeandrew@gmail.com';
+		$mail->Password = 'yeawenkmvvqblblq';
+		$mail->SMTPSecure = 'tls'; 
+		$mail->Port = 587;
+
+		$mail->Subject = "Contact request from Marshallwoodmansee.com";
+		$mail->isHTML(true);
+    $mail->addAddress('denikeandrew@gmail.com');
+    $mail->addAddress('Marshallwoodmanseeofficial@gmail.com');
+	
+		$mail->setFrom($email);
+		$mail->Body = 'Name: ' . $name . 
+		"<br><br>" . 'Email: ' . $email;
+
+		if ($mail->send())
+			$msg = "Thank you for signing up!";
+
+		else 
+			$msg = "Please enter all contact fields below and try again!";
+
+	}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
   <meta charset="utf-8">
@@ -61,13 +113,19 @@
       <img id="bigLogo" src="images/horizontal logo.png">
       <br>
       <br>
-      <h5>Please sign up and join us in the fight for real change!</h5>
+      
 
-      <form class="signup">
+      <?php if ($msg != "") echo "<div class='txt-center' style='color:#25673F; font-size: 17px;'>". "$msg<br><br>" ."</div>"; ?>		
+
+      <form class="signup" method="post" action="index.php">
+        <h5>Sign up and join us in the fight for real change!</h5>
         <div class="form-group">
           <!-- <label for="exampleInputEmail1">Email address</label> -->
           <input type="text" class="form-control" name="name" placeholder="Name">
           <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
+        </div>
+        <div>
+            <input name="email" type="text" style="display: none;">
         </div>
         <div class="form-group">
           <!-- <label for="exampleInputPassword1">Password</label> -->
@@ -78,10 +136,11 @@
           <label class="form-check-label" for="exampleCheck1">Check me out</label>
         </div> -->
         <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
-        <input class="btn btn-primary" type="submit" input type="submit" name="submit" value="Submit!">
-        
+        <input class="btn btn-primary" type="submit" name="submit" value="Submit!">
+      
       </form>
       <a href="https://secure.actblue.com/donate/marshmoney#"><button type="button" class="btn btn-success donate">Please Donate!</button></a>
+
       <br>
       <!-- <br> -->
       <div class="flex-w">
@@ -98,8 +157,8 @@
 
   <section id="about">
     <div class="container">
+      <img class="bigimg" src="images/meetmarsh.jpg">
       <div class="row">
-        <img src="images/meetmarsh.jpg">
         <div class="col-lg-8 mx-auto">
           <h2>Meet Marshall</h2>
           <p class="lead">Marshall has been actively engaged in his community for over a decade. He has taught environmental education classes, lead in the advocacy for a lifestyle without fossil fuels, worked to develop social movements among young people, interned for the CA state assembly, and actively participated in city government. Now, Marshall’s ready to take the next step in leading his community to a sustainable future that improves the way we live, get around, and consume.</p>
@@ -115,7 +174,7 @@
                 </div>
                 <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
                   <div class="card-body">
-                      In order to be successful in our mission to create a better world, we have to tell the truth about our situation. The prosperity of Marshall’s generation depends on the decisions we make in these next few years, giving Marshall all the more reason to create climate action. It is time that we remove special interests, deception, and inaction from politics and focus on making a sustainable future for our communities.
+                      In order to be successful in our mission to create a better world, we have to tell the truth about our situation. The prosperity of our generations depend on the decisions we make in these next few years, giving us all the more reason to create climate action now. It is time that we remove special interests, deception, and inaction from politics and focus on making a sustainable future for our communities.
                   </div>
                 </div>
               </div>
@@ -123,7 +182,7 @@
                 <div class="card-header" id="headingTwo">
                   <h5 class="mb-0">
                     <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        Resiliency
+                        Resiliency &#x25BC;
                     </button>
                   </h5>
                 </div>
@@ -137,7 +196,7 @@
                 <div class="card-header" id="headingThree">
                   <h5 class="mb-0">
                     <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                        Compassion
+                        Compassion &#x25BC;
                     </button>
                   </h5>
                 </div>
@@ -163,8 +222,8 @@
 
   <section id="issues" class="bg-light">
     <div class="container">
+      <img class="bigimg" src="images/air_crop.jpg">
       <div class="row">
-        <img class="img-fluid" src="images/air_crop.jpg">
         <div class="col-lg-8 mx-auto">
           <h2>Issues</h2>
           <p class="lead">These are the core issues I will look to address and change going forward:</p>
@@ -199,8 +258,9 @@
       <div class="row">
         <div class="col-lg-8 mx-auto">
           <h2>Events</h2>
-          <div style="position: absolute;height: 25px;width: 100%;background: white;margin-top: 476px;"></div>  
-          <iframe id="cal" src="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%230B8043&amp;ctz=America%2FLos_Angeles&amp;src=bWFyc2hhbGx3b29kbWFuc2Vlb2ZmaWNpYWxAZ21haWwuY29t&amp;color=%2322AA99&amp;showNav=1&amp;showPrint=0&amp;showTabs=0&amp;showCalendars=0" style="border-width:0" width="730" height="500" frameborder="0" scrolling="no"></iframe>
+          <!-- <div style="position: absolute;height: 25px;width: 100%;background: white;margin-top: 476px;"></div>   -->
+          <iframe id="cal" src="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%230B8043&amp;ctz=America%2FLos_Angeles&amp;src=bWFyc2hhbGx3b29kbWFuc2Vlb2ZmaWNpYWxAZ21haWwuY29t&amp;color=%2322AA99&amp;showTabs=0&amp;showPrint=0&amp;showCalendars=0&amp;showTitle=0" style="border-width:0" width="730" height="500" frameborder="0" scrolling="no"></iframe>
+          
           <!-- <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero odio fugiat voluptatem dolor, provident officiis, id iusto! Obcaecati incidunt, qui nihil beatae magnam et repudiandae ipsa exercitationem, in, quo totam.</p> -->
         </div>
       </div>
@@ -212,22 +272,16 @@
         <div class="row">
           <div class="col-lg-8 mx-auto">
             <h2>Contact</h2>
-            <p class="lead">Please contact us anytime via email: <a href="mailto: Marshallwoodmanseeofficial@gmail.com">marshallwoodmansee@gmail.com</a></p>
+            <p class="lead">Please contact us anytime via email for information on the campaign, events, or anything on your mind: <a href="mailto: Marshallwoodmanseeofficial@gmail.com">marshallwoodmanseeofficial@gmail.com</a></p>
           </div>
         </div>
         <div class="row">
             <div class="col-lg-8 mx-auto">
               <h3>Social Media</h3>
               <div class="list-group">
-              
-
-                
                 <a href="https://www.facebook.com/marshallwoodmanseeofficial/" class="list-group-item list-group-item-action list-group-item-primary">Facebook</a>
-        
                 <a href="https://www.instagram.com/marshallwoodmanseeofficial/?hl=en" class="list-group-item list-group-item-action list-group-item-success">Instagram</a>
-
                 <a href="https://twitter.com/m_w_official" class="list-group-item list-group-item-action list-group-item-warning">Twitter</a>
-            
               </div>
               <!-- <div id="socialmedia">
                   <a href="https://www.facebook.com/marshallwoodmanseeofficial/">Facebook</a>
